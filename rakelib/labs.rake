@@ -122,22 +122,23 @@ module Labs
       write_lab_html(lab, labs)
     end
   end
-
-  def nav_links(f, lab)
-    partial("nav", binding)
-  end
-
-  def lab_index(f, labs)
-    partial("lab_index", binding)
-  end
-
-  def partial(template, bnd)
-    result = open("templates/#{template}.html.erb") do |tpl|
-      template_string = tpl.read
-      template_string.gsub!(/-%>/, "%>@NONEWLINE@")
-      ERB.new(template_string).result(bnd)
+  
+  def emit_links(f, lab)
+    f.puts "<div class=\"nav\">"
+    f.puts "<ul>"
+    if lab.prev
+      f.puts "<li><a href=\"#{lab.prev.filename}\">Previous Lab</a></li>"
+    else
+      f.puts "<li>Previous Lab</li>"
     end
-    result.gsub(/@NONEWLINE@\n/, '')
+    if lab.next
+      f.puts "<li><a href=\"#{lab.next.filename}\">Next Lab</a></li>"
+    else
+      f.puts "<li>Next Lab</li>"
+    end
+    f.puts "<li><a href=\"index.html\">Index</a></li>"
+    f.puts "</ul>"
+    f.puts "</div>"
   end
 
   def write_index_html(labs)
